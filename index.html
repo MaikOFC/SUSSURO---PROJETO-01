@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sussurro - Transcrição</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              turquoise: {
+                400: '#22d3ee', // Cyan-400
+                500: '#06b6d4', // Cyan-500
+                600: '#0891b2', // Cyan-600
+              }
+            },
+            animation: {
+              'fade-in': 'fadeIn 0.3s ease-out forwards',
+              'ping-slow': 'ping 2s cubic-bezier(0, 0, 0.2, 1) infinite',
+            },
+            keyframes: {
+              fadeIn: {
+                '0%': { opacity: '0', transform: 'translateY(10px)' },
+                '100%': { opacity: '1', transform: 'translateY(0)' },
+              },
+            },
+          },
+        },
+      }
+    </script>
+    <style>
+      /* Force VLibras to be centered bottom, just above the control panel */
+      [vw] .vw-plugin-wrapper {
+        position: fixed !important;
+        bottom: 280px !important; /* Above visualizer and mic controls */
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        right: auto !important;
+        top: auto !important;
+        margin: 0 !important;
+        z-index: 9999 !important;
+        pointer-events: none !important; /* Crucial: Lets clicks pass through the invisible wrapper to the app */
+      }
+      
+      /* Re-enable clicks only on the actual VLibras elements (avatar and button) */
+      [vw] .vw-plugin-top-wrapper, 
+      [vw] [vw-access-button] {
+        pointer-events: auto !important;
+      }
+      
+      /* Position the access button */
+      [vw] [vw-access-button] {
+        bottom: 150px !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        right: auto !important;
+        margin: 0 !important;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.35.0"
+  }
+}
+</script>
+</head>
+  <body class="bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
+    <div id="root"></div>
+    
+    <!-- VLibras Widget -->
+    <div vw class="enabled">
+      <div vw-access-button class="active"></div>
+      <div vw-plugin-wrapper>
+        <div class="vw-plugin-top-wrapper"></div>
+      </div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+      new window.VLibras.Widget('https://vlibras.gov.br/app');
+    </script>
+  </body>
+</html>

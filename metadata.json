@@ -1,0 +1,7 @@
+{
+  "name": "SUSSURRO",
+  "description": "Transcrição de áudio em tempo real usando Gemini Live API com design focado em azul e verde.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}

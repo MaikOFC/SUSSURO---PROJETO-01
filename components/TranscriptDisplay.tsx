@@ -46,7 +46,7 @@ const TypewriterText: React.FC<{
     <span>
       {displayedText}
       {isTyping && (
-        <span className="inline-block w-2 h-5 ml-0.5 align-middle bg-cyan-500 dark:bg-cyan-400 animate-pulse rounded-sm" />
+        <span className="inline-block w-2 h-5 ml-0.5 align-middle bg-teal-500 dark:bg-teal-400 animate-pulse rounded-sm" />
       )}
     </span>
   );
@@ -80,10 +80,10 @@ const TranscriptDisplay: React.FC<TranscriptDisplayProps> = ({ transcripts, curr
   };
 
   return (
-    <div className="flex-1 overflow-y-auto p-6 space-y-4 font-mono text-sm md:text-base scrollbar-thin scrollbar-thumb-cyan-500/20 scrollbar-track-transparent">
+    <div className="flex-1 overflow-y-auto p-6 space-y-4 font-mono text-sm md:text-base scrollbar-thin scrollbar-thumb-teal-500/20 scrollbar-track-transparent">
       {transcripts.length === 0 && !currentText && (
         <div className="h-full flex flex-col items-center justify-center text-slate-400 dark:text-slate-600 opacity-60">
-          <svg className="w-16 h-16 mb-4 text-cyan-700 dark:text-cyan-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-16 h-16 mb-4 text-teal-700 dark:text-teal-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
           </svg>
           <p className="text-center font-sans font-medium">Pressione o microfone para começar.</p>
@@ -93,14 +93,14 @@ const TranscriptDisplay: React.FC<TranscriptDisplayProps> = ({ transcripts, curr
       {transcripts.map((item) => (
         <div 
           key={item.id} 
-          className="group relative p-4 rounded-lg animate-fade-in transition-all duration-300 bg-white dark:bg-slate-800/40 border-l-4 border-cyan-500 dark:border-cyan-400 shadow-sm dark:shadow-none text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/60"
+          className="group relative p-4 rounded-lg animate-fade-in transition-all duration-300 bg-white dark:bg-slate-800/40 border-l-4 border-teal-500 dark:border-teal-400 shadow-sm dark:shadow-none text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/60"
         >
           <div className="flex justify-between items-center mb-1">
-             <span className="text-xs font-bold text-cyan-600 dark:text-cyan-400 uppercase tracking-wider">Você</span>
+             <span className="text-xs font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider">Você</span>
              <div className="flex items-center gap-2">
                 <button 
                   onClick={() => handleSelectText(item.id)}
-                  className="opacity-0 group-hover:opacity-100 transition-opacity p-1 text-slate-400 hover:text-cyan-500"
+                  className="opacity-0 group-hover:opacity-100 transition-opacity p-1 text-slate-400 hover:text-teal-500"
                   title="Selecionar para Libras"
                   aria-label="Selecionar texto para tradução em Libras"
                 >
@@ -115,7 +115,7 @@ const TranscriptDisplay: React.FC<TranscriptDisplayProps> = ({ transcripts, curr
           <p 
             id={`transcript-text-${item.id}`}
             onClick={() => handleSelectText(item.id)}
-            className="leading-relaxed cursor-pointer selection:bg-cyan-200 dark:selection:bg-cyan-900 selection:text-cyan-900 dark:selection:text-cyan-100"
+            className="leading-relaxed cursor-pointer selection:bg-teal-200 dark:selection:bg-teal-900 selection:text-teal-900 dark:selection:text-teal-100"
           >
             <TypewriterText 
               text={item.text} 
@@ -127,9 +127,9 @@ const TranscriptDisplay: React.FC<TranscriptDisplayProps> = ({ transcripts, curr
       ))}
 
       {currentText && (
-         <div className="p-4 rounded-lg bg-blue-50 dark:bg-slate-800/20 border-l-4 border-blue-500 text-blue-900 dark:text-blue-100 animate-pulse">
+         <div className="p-4 rounded-lg bg-teal-50 dark:bg-slate-800/20 border-l-4 border-teal-500 text-teal-900 dark:text-teal-100 animate-pulse">
             <div className="flex justify-between items-center mb-1">
-             <span className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">Ouvindo...</span>
+             <span className="text-xs font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider">Ouvindo...</span>
           </div>
           <p className="leading-relaxed">{currentText}</p>
         </div>

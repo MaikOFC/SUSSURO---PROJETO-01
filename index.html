@@ -10,13 +10,6 @@
         darkMode: 'class',
         theme: {
           extend: {
-            colors: {
-              turquoise: {
-                400: '#22d3ee', // Cyan-400
-                500: '#06b6d4', // Cyan-500
-                600: '#0891b2', // Cyan-600
-              }
-            },
             animation: {
               'fade-in': 'fadeIn 0.3s ease-out forwards',
               'ping-slow': 'ping 2s cubic-bezier(0, 0, 0.2, 1) infinite',
@@ -70,6 +63,7 @@
   }
 }
 </script>
+<link rel="stylesheet" href="/index.css">
 </head>
   <body class="bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
     <div id="root"></div>
@@ -85,5 +79,6 @@
     <script>
       new window.VLibras.Widget('https://vlibras.gov.br/app');
     </script>
-  </body>
+  <script type="module" src="/index.tsx"></script>
+</body>
 </html>

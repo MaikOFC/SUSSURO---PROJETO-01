@@ -1,21 +1,32 @@
 {
-  "name": "sussurro",
+  "name": "sussurro-2.0",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "tsx server.ts",
     "build": "vite build",
+    "lint": "tsc --noEmit",
+    "start": "tsx server.ts",
     "preview": "vite preview"
   },
   "dependencies": {
-    "react": "^19.2.3",
-    "react-dom": "^19.2.3",
-    "@google/genai": "^1.35.0"
+    "express": "^5.2.1",
+    "framer-motion": "^12.38.0",
+    "lucide-react": "^0.577.0",
+    "motion": "^12.38.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "react-router-dom": "^7.15.1",
+    "tsx": "^4.21.0",
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
+    "@tailwindcss/vite": "^4.2.2",
+    "@types/express": "^5.0.6",
     "@types/node": "^22.14.0",
     "@vitejs/plugin-react": "^5.0.0",
+    "tailwindcss": "^4.2.2",
     "typescript": "~5.8.2",
     "vite": "^6.2.0"
   }

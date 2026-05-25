@@ -1,7 +1,8 @@
 {
-  "name": "SUSSURRO",
-  "description": "Transcrição de áudio em tempo real usando Gemini Live API com design focado em azul e verde.",
+  "name": "Sussurro 6.0",
+  "description": "tradutor de voz para libras",
   "requestFramePermissions": [
     "microphone"
-  ]
+  ],
+  "majorCapabilities": []
 }

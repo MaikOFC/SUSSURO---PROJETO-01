@@ -2,83 +2,272 @@
 <html lang="pt-BR" class="dark">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sussurro - Transcrição</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        darkMode: 'class',
-        theme: {
-          extend: {
-            animation: {
-              'fade-in': 'fadeIn 0.3s ease-out forwards',
-              'ping-slow': 'ping 2s cubic-bezier(0, 0, 0.2, 1) infinite',
-            },
-            keyframes: {
-              fadeIn: {
-                '0%': { opacity: '0', transform: 'translateY(10px)' },
-                '100%': { opacity: '1', transform: 'translateY(0)' },
-              },
-            },
-          },
-        },
-      }
-    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <!-- PWA Meta Tags -->
+    <meta name="application-name" content="Sussurro" />
+    <meta name="description" content="Transcritor de voz em tempo real com tradução para Libras" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Sussurro" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" type="image/png" href="/logo.png" />
+    <link rel="apple-touch-icon" href="/logo.png" />
+    <title>Sussurro - Transcrição em Tempo Real</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-      /* Force VLibras to be centered bottom, just above the control panel */
-      [vw] .vw-plugin-wrapper {
-        position: fixed !important;
-        bottom: 280px !important; /* Above visualizer and mic controls */
-        left: 50% !important;
-        transform: translateX(-50%) !important;
-        right: auto !important;
-        top: auto !important;
-        margin: 0 !important;
-        z-index: 9999 !important;
-        pointer-events: none !important; /* Crucial: Lets clicks pass through the invisible wrapper to the app */
+      /* Esconde caixas internas do VLibras que causam conflitos ou feedback indesejado */
+      [vp-rate-box],
+      [vp-suggestion-screen],
+      [vp-translator-screen],
+      [vp-more-options-screen],
+      .vpw-message-box,
+      .vp-guide-container,
+      [vp-main-guide-screen],
+      .vpw-speaking,
+      .vp-speaking,
+      .vp-speaking-button,
+      .vpw-text-reader,
+      .vpw-reader,
+      .vpw-selectTextLabel {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
       }
-      
-      /* Re-enable clicks only on the actual VLibras elements (avatar and button) */
-      [vw] .vw-plugin-top-wrapper, 
-      [vw] [vw-access-button] {
+
+      /* Remove bloqueador de toque do VLibras — permite toque único nos botões */
+      span[vp-click-blocker],
+      [vp-click-blocker],
+      .vp-click-blocker,
+      span[vp-click-blocker].vp-enabled {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        width: 0 !important;
+        height: 0 !important;
+      }
+
+      /* Elimina delay de duplo toque em todos os botões interativos */
+      button,
+      [role="button"],
+      a,
+      input,
+      label,
+      [data-vlibras-ignore="true"] {
+        touch-action: manipulation !important;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      /* Garante que os botões do app fiquem acima do VLibras e sejam clicáveis */
+      #btn-sussurro-action,
+      #btn-sussurro-refresh,
+      #btn-sussurro-toggle-mode,
+      #btn-sussurro-settings,
+      button.group,
+      button[class*="group relative flex items-center justify-center"],
+      button[class*="p-1.5"],
+      button[class*="p-2 rounded-lg"] {
+        position: relative !important;
+        z-index: 999999 !important;
         pointer-events: auto !important;
+        touch-action: manipulation !important;
       }
-      
-      /* Position the access button */
-      [vw] [vw-access-button] {
-        bottom: 150px !important;
-        left: 50% !important;
-        transform: translateX(-50%) !important;
-        right: auto !important;
-        margin: 0 !important;
+
+      /* Elimina 300ms tap delay do Chrome mobile */
+      html {
+        touch-action: manipulation;
       }
     </style>
-  <script type="importmap">
-{
-  "imports": {
-    "react": "https://esm.sh/react@^19.2.3",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "@google/genai": "https://esm.sh/@google/genai@^1.35.0"
-  }
-}
-</script>
-<link rel="stylesheet" href="/index.css">
-</head>
-  <body class="bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
+  </head>
+  <body>
     <div id="root"></div>
-    
+    <script type="module" src="/src/main.tsx"></script>
+
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then(() => console.log('[PWA] Service Worker registrado'))
+            .catch((err) => console.warn('[PWA] Erro no Service Worker:', err));
+        });
+      }
+    </script>
     <!-- VLibras Widget -->
     <div vw class="enabled">
       <div vw-access-button class="active"></div>
       <div vw-plugin-wrapper>
-        <div class="vw-plugin-top-wrapper"></div>
+        <div vp></div>
       </div>
     </div>
     <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
     <script>
-      new window.VLibras.Widget('https://vlibras.gov.br/app');
+      let vlibrasInstance;
+
+      function configurarVLibras() {
+        // Força todos os botões do app a ficarem acima do VLibras
+        const protegerBotoesApp = () => {
+          const botoesApp = document.querySelectorAll(
+            '#btn-sussurro-action, #btn-sussurro-refresh, #btn-sussurro-toggle-mode, #btn-sussurro-settings, button.group, button[class*="p-1.5"], button[class*="p-2 rounded-lg"]'
+          );
+          botoesApp.forEach(btn => {
+            btn.style.setProperty('position', 'relative', 'important');
+            btn.style.setProperty('z-index', '999999', 'important');
+            btn.style.setProperty('pointer-events', 'auto', 'important');
+            btn.style.setProperty('touch-action', 'manipulation', 'important');
+          });
+        };
+
+        protegerBotoesApp();
+        setInterval(protegerBotoesApp, 500);
+
+        // Força recálculo de estilos após carregamento completo
+        window.addEventListener('load', () => {
+          setTimeout(protegerBotoesApp, 500);
+          setTimeout(protegerBotoesApp, 1500);
+          setTimeout(protegerBotoesApp, 3000);
+        });
+
+        const botaoAcesso = document.querySelector('[vw-access-button]');
+        if (botaoAcesso && !botaoAcesso.dataset.autoClicked) {
+          botaoAcesso.dataset.autoClicked = 'true';
+          setTimeout(() => { botaoAcesso.click(); }, 500);
+        }
+
+        // Pula o guia inicial (botão "Não, obrigado")
+        const botaoNegar = document.querySelector('.vpw-guide__main__deny-btn');
+        if (botaoNegar && !botaoNegar.dataset.autoClicked) {
+          botaoNegar.dataset.autoClicked = 'true';
+          setTimeout(() => { botaoNegar.click(); }, 800);
+        }
+
+        // Pula a mensagem de boas-vindas (botão "Pular") em 3 tempos diferentes
+        const clicarPular = () => {
+          const botaoPular = document.querySelector('.vpw-skip-welcome-message');
+          if (botaoPular) botaoPular.click();
+        };
+        setTimeout(clicarPular, 3000);
+        setTimeout(clicarPular, 6000);
+        setTimeout(clicarPular, 10000);
+
+        const elementosParaEsconder = [
+          '.vpw-controls-fullscreen',
+          '.vpw-more-options-button',
+          '.vpw-translator-button',
+          '[vp-suggestion-screen]',
+          '[vp-rate-box]',
+          '[vp-translator-screen]',
+          '.vpw-message-box',
+          '[vp-more-options-screen]',
+          '.vp-guide-container',
+          '[vp-main-guide-screen]',
+          '.vpw-speaking',
+          '.vp-speaking',
+          '.vp-speaking-button',
+          '.vpw-text-reader',
+          '.vpw-reader',
+          '.vpw-selectTextLabel'
+        ];
+
+        // Função dinâmica para esconder o microfone / leitor de voz por ID ou Class após carregar
+        const esconderRecursosDeVozInternos = () => {
+          const IDsEClasses = [
+            '.vpw-speaking',
+            '.vp-speaking',
+            '.vp-speaking-button',
+            '.vpw-text-reader',
+            '.vpw-reader',
+            '.vpw-voice',
+            '.vp-voice',
+            '#vpw-voice',
+            '#vp-voice',
+            '#vpw-speaking',
+            '#vp-speaking'
+          ];
+          IDsEClasses.forEach(sel => {
+            const elementos = document.querySelectorAll(sel);
+            elementos.forEach(el => {
+              if (el) {
+                el.style.setProperty('display', 'none', 'important');
+                el.style.setProperty('visibility', 'hidden', 'important');
+                el.style.setProperty('opacity', '0', 'important');
+                el.style.setProperty('pointer-events', 'none', 'important');
+              }
+            });
+          });
+        };
+
+        const observer = new MutationObserver(() => {
+          // Garante a ocultação correta dos elementos configurados
+          elementosParaEsconder.forEach(seletor => {
+            const el = document.querySelector(seletor);
+            if (el && !el.dataset.hidden) {
+              el.dataset.hidden = 'true';
+              el.style.setProperty('display', 'none', 'important');
+              el.style.setProperty('visibility', 'hidden', 'important');
+              el.style.setProperty('opacity', '0', 'important');
+              el.style.setProperty('pointer-events', 'none', 'important');
+            }
+          });
+
+          // Executa a busca dinâmica pós carregamento sugerida pelo usuário
+          esconderRecursosDeVozInternos();
+
+          const wrapper = document.querySelector('[vw-plugin-wrapper]');
+          if (wrapper) {
+            const ajustarTamanho = () => {
+              const W = window.innerWidth;
+              const H = window.innerHeight;
+              const largura = W >= 768 ? W / 2 : W;
+              const altura = W >= 768 ? H : H / 2;
+
+              // Só aplica tamanho quando o widget estiver ABERTO (classe active presente)
+              const vwEl = document.querySelector('div[vw]');
+              const estaAberto = vwEl && (
+                vwEl.classList.contains('active') ||
+                wrapper.classList.contains('active')
+              );
+
+              if (estaAberto) {
+                wrapper.style.setProperty('position', 'fixed', 'important');
+                wrapper.style.setProperty('top', '0', 'important');
+                wrapper.style.setProperty('right', '0', 'important');
+                wrapper.style.setProperty('width', `${largura}px`, 'important');
+                wrapper.style.setProperty('height', `${altura}px`, 'important');
+                wrapper.style.setProperty('min-width', `${largura}px`, 'important');
+                wrapper.style.setProperty('min-height', `${altura}px`, 'important');
+                wrapper.style.setProperty('border-radius', '0', 'important');
+                wrapper.style.setProperty('box-shadow', 'none', 'important');
+              } else {
+                // Widget fechado — remove estilos forçados para o botão aparecer
+                wrapper.style.removeProperty('width');
+                wrapper.style.removeProperty('height');
+                wrapper.style.removeProperty('min-width');
+                wrapper.style.removeProperty('min-height');
+              }
+            };
+
+            ajustarTamanho();
+            setInterval(ajustarTamanho, 500);
+            window.addEventListener('resize', ajustarTamanho);
+          }
+        });
+
+        observer.observe(document.body, { childList: true, subtree: true });
+      }
+
+      function initVLibras() {
+        if (window.VLibras && window.VLibras.Widget) {
+          vlibrasInstance = new window.VLibras.Widget('https://vlibras.gov.br/app');
+          setTimeout(configurarVLibras, 1500);
+        } else {
+          setTimeout(initVLibras, 100);
+        }
+      }
+
+      initVLibras();
     </script>
-  <script type="module" src="/index.tsx"></script>
-</body>
+  </body>
 </html>

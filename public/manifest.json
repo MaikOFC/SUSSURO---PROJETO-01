@@ -1,0 +1,19 @@
+{
+  "id": "/sussurro-libras",
+  "name": "Sussurro",
+  "short_name": "Sussurro",
+  "description": "Transcritor de voz em tempo real com tradução para Libras",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "192x192 512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

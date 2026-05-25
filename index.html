@@ -80,6 +80,18 @@
       html {
         touch-action: manipulation;
       }
+
+      /* Cria uma zona de proteção invisível acima do botão do microfone para bloquear cliques de VLibras */
+      #btn-sussurro-action::before {
+        content: '';
+        position: absolute;
+        top: -20px;
+        left: -20px;
+        right: -20px;
+        bottom: -20px;
+        pointer-events: auto;
+        z-index: 999998;
+      }
     </style>
   </head>
   <body>
@@ -129,6 +141,65 @@
           setTimeout(protegerBotoesApp, 1500);
           setTimeout(protegerBotoesApp, 3000);
         });
+
+        // Estratégia de proteção: criar um listener que detecta eventos de VLibras
+        // e bloqueia apenas a propagação para cima (bubbling), sem interferir com o botão
+        const protegerBotaoMicrofoneDeVLibras = () => {
+          const btn = document.querySelector('#btn-sussurro-action');
+          if (!btn || btn.dataset.vlibrasShieldActive === 'true') return;
+
+          btn.dataset.vlibrasShieldActive = 'true';
+
+          // Função para detectar se o evento originou-se de um elemento VLibras
+          const bloquearEventosDeVLibras = (e) => {
+            // Verifica se o evento originou-se de um elemento VLibras (overlay, canvas, etc)
+            let source = e.target;
+            let isVLibrasEvent = false;
+
+            // Percorre a cadeia de elementos até encontrar uma origem
+            while (source && source !== document) {
+              const tagName = source.tagName ? source.tagName.toLowerCase() : '';
+              const classes = source.className ? source.className.toLowerCase() : '';
+              
+              // Verifica atributos e classes VLibras
+              const hasVLibrasAttr = source.hasAttribute && (
+                source.hasAttribute('vp') ||
+                source.hasAttribute('vw') ||
+                source.hasAttribute('vp-click-blocker') ||
+                classes.includes('vpw-') ||
+                classes.includes('vp-') ||
+                tagName === 'canvas' // Canvas é frequentemente usado por VLibras
+              );
+
+              if (hasVLibrasAttr) {
+                isVLibrasEvent = true;
+                break;
+              }
+              source = source.parentElement;
+            }
+
+            // Se o evento veio de VLibras, bloqueia apenas a propagação para cima (bubbling)
+            // Não bloqueia completamente para não interferir com o próprio botão
+            if (isVLibrasEvent) {
+              e.stopPropagation();
+            }
+          };
+
+          // Adiciona listeners na fase de bubbling (não captura)
+          // Isso permite que o próprio botão processe seus eventos normalmente
+          btn.addEventListener('click', bloquearEventosDeVLibras, false);
+          btn.addEventListener('touchstart', bloquearEventosDeVLibras, false);
+          btn.addEventListener('touchend', bloquearEventosDeVLibras, false);
+          btn.addEventListener('touchmove', bloquearEventosDeVLibras, false);
+          btn.addEventListener('mousedown', bloquearEventosDeVLibras, false);
+          btn.addEventListener('mouseup', bloquearEventosDeVLibras, false);
+        };
+
+        // Chama a proteção inicial
+        protegerBotaoMicrofoneDeVLibras();
+        
+        // Re-aplica a cada 2 segundos para garantir cobertura
+        setInterval(protegerBotaoMicrofoneDeVLibras, 2000);
 
         const botaoAcesso = document.querySelector('[vw-access-button]');
         if (botaoAcesso && !botaoAcesso.dataset.autoClicked) {

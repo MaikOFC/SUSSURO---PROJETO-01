@@ -130,6 +130,50 @@
           setTimeout(protegerBotoesApp, 3000);
         });
 
+        // Protege botões contra interceptação de eventos por VLibras
+        const protegerBotaoMicrofoneDeVLibras = () => {
+          const botoesParaProteger = document.querySelectorAll(
+            '#btn-sussurro-action, [data-microphone], button[aria-label*="icrofone"]'
+          );
+          
+          botoesParaProteger.forEach(btn => {
+            // Previne propagação de eventos de toque no capture phase
+            btn.addEventListener('touchstart', (e) => {
+              e.stopPropagation();
+              e.stopImmediatePropagation();
+            }, { capture: true });
+            
+            btn.addEventListener('touchend', (e) => {
+              e.stopPropagation();
+              e.stopImmediatePropagation();
+            }, { capture: true });
+            
+            btn.addEventListener('touchmove', (e) => {
+              e.stopPropagation();
+              e.stopImmediatePropagation();
+            }, { capture: true });
+            
+            // Também manipula eventos de clique
+            btn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              e.stopImmediatePropagation();
+            }, { capture: true });
+            
+            // Garante que pointer events sempre estejam ativas
+            btn.style.setProperty('pointer-events', 'auto', 'important');
+            btn.style.setProperty('touch-action', 'manipulation', 'important');
+            
+            // Marca o botão como protegido para evitar re-aplicação desnecessária
+            btn.dataset.vlibrasProtected = 'true';
+          });
+        };
+
+        // Chama a proteção inicial
+        protegerBotaoMicrofoneDeVLibras();
+        
+        // Re-aplica a cada 1 segundo para novos botões criados dinamicamente
+        setInterval(protegerBotaoMicrofoneDeVLibras, 1000);
+
         const botaoAcesso = document.querySelector('[vw-access-button]');
         if (botaoAcesso && !botaoAcesso.dataset.autoClicked) {
           botaoAcesso.dataset.autoClicked = 'true';

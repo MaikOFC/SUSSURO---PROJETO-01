@@ -165,18 +165,45 @@ div[vw].active {
 }
 #gameContainer canvas { min-height: 100% !important; min-width: 100% !important; object-fit: contain; }
 
-/* ── VLibras: data-vlib-ignore e vp-click-blocker ───────────────────────────
-   Mesma técnica do Traduz Libras (traduzlibras.com.br).
-   O vp-click-blocker é um overlay transparente que o VLibras injeta
-   com z-index: 9999999 para capturar todos os cliques da página.
-   Desativando pointer-events nele e garantindo z-index maior nos
-   elementos protegidos, os cliques chegam direto ao nosso app. */
+/* ════════════════════════════════════════════════════════════════════════════════
+   ✅ TÉCNICA TRADUZ LIBRAS: vp-click-blocker + data-vlib-ignore
+   
+   O VLibras injeta um overlay com classe/atributo "vp-click-blocker" que tem
+   z-index: 9999999 para CAPTURAR TODOS OS CLIQUES da página.
+   
+   SOLUÇÃO: 
+   1. Desativar pointer-events no vp-click-blocker
+   2. Proteger botões específicos com data-vlib-ignore="true"
+   3. Garantir z-index maior nos botões protegidos
+   
+   Referência: https://traduzlibras.com/traducao-simultanea
+   ════════════════════════════════════════════════════════════════════════════════ */
 
-span[vp-click-blocker], [vp-click-blocker] {
+/* PASSO 1: Desativar o overlay invisível do VLibras */
+span[vp-click-blocker], 
+[vp-click-blocker] {
   pointer-events: none !important;
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
-/* Oculta apenas os subelementos internos do VLibras que lidam com leitura de tela e reprodução de voz, sem esconder a barra de controles em si */
+/* PASSO 2: Proteger elementos com data-vlib-ignore */
+[data-vlib-ignore="true"] {
+  pointer-events: auto !important;
+  position: relative !important;
+  z-index: 999999 !important;
+  touch-action: manipulation !important;
+}
+
+/* PASSO 3: Proteger filhos também */
+[data-vlib-ignore="true"] * {
+  pointer-events: auto !important;
+}
+
+/* Oculta apenas os subelementos internos do VLibras que lidam com leitura de tela e reprodução de voz */
 .vpw-speaking,
 .vp-speaking,
 .vp-speaking-button,
@@ -189,12 +216,29 @@ span[vp-click-blocker], [vp-click-blocker] {
   pointer-events: none !important;
 }
 
-[data-vlib-ignore="true"] {
-  pointer-events: auto !important;
-  position: relative !important;
-  z-index: 999999 !important;
+/* ════════════════════════════════════════════════════════════════════════════════
+   TOUCHSCREEN OPTIMIZATION - Reduz tap delay para toque único
+   ════════════════════════════════════════════════════════════════════════════════ */
+
+html {
+  touch-action: manipulation;
 }
 
-[data-vlib-ignore="true"] * {
+button,
+[role="button"],
+a,
+input,
+label {
+  touch-action: manipulation !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+/* Garante z-index correto para botões do app */
+#btn-sussurro-action,
+#btn-sussurro-refresh,
+#btn-sussurro-toggle-mode,
+#btn-sussurro-settings {
+  position: relative !important;
+  z-index: 999999 !important;
   pointer-events: auto !important;
 }

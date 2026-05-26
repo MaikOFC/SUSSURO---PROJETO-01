@@ -96,7 +96,7 @@ const HomePage: React.FC<HomePageProps> = ({
               <button
                 id="btn-sussurro-refresh"
                 onClick={handleRefresh}
-                data-vlibras-ignore="true"
+                data-vlib-ignore="true"
                 className={`p-1.5 md:p-2 rounded-lg transition-all transform active:scale-95 ${
                   updateAvailable 
                     ? 'bg-amber-500 text-white animate-pulse shadow-lg shadow-amber-500/40 border border-amber-400' 
@@ -109,7 +109,7 @@ const HomePage: React.FC<HomePageProps> = ({
               <button
                 id="btn-sussurro-toggle-mode"
                 onClick={() => setActiveTab(activeTab === 'voice' ? 'text' : 'voice')}
-                data-vlibras-ignore="true"
+                data-vlib-ignore="true"
                 className={`p-1.5 md:p-2 rounded-lg transition-colors ${activeTab === 'text' ? 'bg-teal-500/10 text-teal-600 dark:text-teal-400' : 'hover:bg-slate-800/10 dark:hover:bg-slate-800'}`}
                 title={activeTab === 'voice' ? 'Digitar Texto' : 'Captação de Áudio'}
               >
@@ -118,7 +118,7 @@ const HomePage: React.FC<HomePageProps> = ({
               <button
                 id="btn-sussurro-settings"
                 onClick={() => navigate('/settings')}
-                data-vlibras-ignore="true"
+                data-vlib-ignore="true"
                 className="p-1.5 md:p-2 rounded-lg hover:bg-slate-800/10 dark:hover:bg-slate-800 transition-colors"
                 title="Configurações"
               >
@@ -154,7 +154,7 @@ const HomePage: React.FC<HomePageProps> = ({
                 <div className="p-3 bg-white/50 dark:bg-slate-900/80 border-t border-slate-200 dark:border-slate-800 flex items-center space-x-2 shrink-0">
                   <button
                     onClick={() => setIsTTSEnabled(!isTTSEnabled)}
-                    data-vlibras-ignore="true"
+                    data-vlib-ignore="true"
                     className={`p-2 rounded-lg transition-colors ${isTTSEnabled ? 'text-teal-500 bg-teal-500/10' : 'text-slate-400 bg-slate-100 dark:bg-slate-800'}`}
                     title={isTTSEnabled ? 'Voz Ativada' : 'Voz Desativada'}
                   >
@@ -165,15 +165,15 @@ const HomePage: React.FC<HomePageProps> = ({
                     value={textInput}
                     onChange={(e) => setTextInput(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleSendText()}
-                    data-vlibras-ignore="true"
+                    data-vlib-ignore="true"
                     placeholder="Digite para converter em voz e Libras..."
                     className="flex-1 bg-transparent px-3 py-2 outline-none text-sm placeholder:text-slate-500"
                   />
                   <button
                     onClick={handleSendText}
-                    data-vlibras-ignore="true"
+                    data-vlib-ignore="true"
                     disabled={!textInput.trim()}
-                    className="p-2 bg-teal-500 hover:bg-teal-400 disabled:bg-slate-400 dark:disabled:bg-slate-700 text-white rounded-lg transition-colors flex shrink-0 items-center justify-center shadow-lg shadow-teal-500/20"
+                    className="p-2 bg-teal-500 hover:bg-teal-400 disabled:bg-slate-400 dark:disabled:bg-slate-700 text-white rounded-lg transition-colors flex shrink-0 items-center justify-center"
                   >
                     <Send className="w-4 h-4" />
                   </button>
@@ -201,7 +201,7 @@ const HomePage: React.FC<HomePageProps> = ({
                     <button
                       id="btn-sussurro-action"
                       onClick={handleStart}
-                      data-vlibras-ignore="true"
+                      data-vlib-ignore="true"
                       className="group relative flex items-center justify-center w-12 h-12 md:w-16 md:h-16 rounded-full bg-teal-500 hover:bg-teal-400 text-white shadow-lg shadow-teal-500/30 transition-all hover:scale-105 active:scale-95"
                     >
                       <Mic className="w-5 h-5 md:w-7 md:h-7" />
@@ -221,7 +221,7 @@ const HomePage: React.FC<HomePageProps> = ({
                     <button
                       id="btn-sussurro-action"
                       onClick={handleStop}
-                      data-vlibras-ignore="true"
+                      data-vlib-ignore="true"
                       className="group relative flex items-center justify-center w-12 h-12 md:w-16 md:h-16 rounded-full bg-red-500 hover:bg-red-400 text-white shadow-lg shadow-red-500/30 transition-all hover:scale-105 active:scale-95 animate-pulse"
                     >
                       <Square className="w-4 h-4 md:w-6 md:h-6 fill-current" />
